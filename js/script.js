@@ -17,26 +17,6 @@ testWebP(function (support) {
    }
 });;
 //анимация бургера
-
-document.querySelector('.header__catalog span').addEventListener('click',
-   function () {
-      document.querySelector('.header__catalog').classList.toggle('active');
-      document.querySelector('.header__product').classList.remove('active');
-      document.querySelector('.header__product-professional').classList.remove('active');
-   })
-
-document.querySelector('.catalog__professional').addEventListener('click',
-   function () {
-      document.querySelector('.header__product-professional').classList.toggle('active');
-      document.querySelector('.header__product').classList.remove('active');
-   })
-
-document.querySelector('.catalog__home').addEventListener('click',
-   function () {
-      document.querySelector('.header__product').classList.toggle('active');
-      document.querySelector('.header__product-professional').classList.remove('active');
-   })
-
 let spoiler__content = document.getElementById('menu');
 document.querySelector('.head__burger').addEventListener('click',
    function () {
@@ -45,7 +25,7 @@ document.querySelector('.head__burger').addEventListener('click',
       slideToggle(spoiler__content);
    })
 //анимация бургера
-//функция анимации слайдера
+//функция анимации спойлера
 function slideToggle(target, duration = 500) {
    if (window.getComputedStyle(target).display === 'none') {
       return slideDown(target, duration);
@@ -111,56 +91,14 @@ function slideDown(target, duration = 500) {
       target.style.removeProperty('transition-property');
    }, duration);
 }
-//функция анимации слайдера
-
-//Свайпер
-var swiper = new Swiper(".mySwiper", {
-   direction: "vertical",
-   spaceBetween: 10,
-   slidesPerView: 4,
-   freeMode: true,
-   watchSlidesProgress: true,
-});
-var swiper2 = new Swiper(".mySwiper2", {
-   pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-   },
-   loop: true,
-   grabCursor: true,
-   centeredSlides: true,
-   zoom: {
-      maxRatio: 1.3,
-      minRation: 1
-   },
-   spaceBetween: 10,
-   navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-   },
-   thumbs: {
-      swiper: swiper,
-   },
-});
-//Свайпер
-
-let swiperSlide = document.getElementsByClassName('swiper-zoom-container')
-console.log(swiperSlide)
-for (let index = 0; index < swiperSlide.length; index++) {
-   swiperSlide[index].addEventListener('mouseover', function (e) {
-      swiper2.zoom.in();
-   })
-
-   swiperSlide[index].addEventListener('mouseout', function (e) {
-      swiper2.zoom.out();
-   })
-}
+//функция анимации спойлера
 
 let ratings = document.querySelectorAll('.rating');
-console.log(ratings);
 if (ratings.length > 0) {
    initRatings();
 }
+
+
 //Основная функция
 function initRatings() {
    let ratingActive, ratingValue;
@@ -191,7 +129,6 @@ function initRatings() {
       let ratingItems = rating.querySelectorAll('.rating__item');
       for (let i = 0; i < ratingItems.length; i++) {
          let ratingItem = ratingItems[i];
-         console.log(ratingItem)
          ratingItem.addEventListener("mouseenter", function (e) {
             initRatingVar(rating);
             setRatingActiveWidth(ratingItem.value);
@@ -220,13 +157,13 @@ function initRatings() {
 
 
          let response = await fetch('rating.json', {
-            //method: 'GET',
-            //body: JSON.stringify({
-            //   userRating: value
-            //}),
-            //headers: {
-            //  'content-type': 'aplication/json'
-            //}
+            // method: 'POST',
+            // body: JSON.stringify({
+            //    userRating: value
+            // }),
+            // headers: {
+            //    'content-type': 'aplication/json'
+            // }
          });
          if (response.ok) {
             let result = await response.json();
@@ -243,3 +180,67 @@ function initRatings() {
       }
    }
 }
+console.log(document.documentElement.clientWidth)
+// Слайдер
+function slider() {
+
+   document.querySelector('.previews').addEventListener('click',
+      function (e) {
+         if (e.target.tagName === 'IMG') {
+            let largeImg = document.querySelector('.large__image source');
+            let preview = e.target.parentNode.parentNode.parentNode
+            let anotherpreview = document.querySelectorAll('.preview')
+            for (let i = 0; i < anotherpreview.length; i++) {
+               anotherpreview[i].classList.remove('activeImg');
+            }
+            preview.classList.add('activeImg')
+            let some = e.srcElement.currentSrc
+            largeImg.srcset = some;
+            if (modal.style.display == "flex") { zoom() }
+         }
+      })
+   let imgClick = document.getElementById("myImg");
+   let modal = document.getElementById("myModal");
+   let img = document.querySelector('.my__img source');
+   let modalImg = document.querySelector('.modal__img source');
+   let zooming = document.querySelector('.zoom');
+
+   function zoom() {
+      modal.style.display = "flex";
+      modalImg.srcset = img.srcset;
+   }
+   function zoomImg() {
+      if (document.documentElement.clientWidth > 870) {
+         imgClick.onclick = zoom;
+         zooming.onclick = zoom;
+         modal.onclick = () => {
+            modal.style.display = "none";
+         }
+      }
+   }
+   zoomImg()
+}
+// Слайдер
+//Каталог
+function openCatalog() {
+   document.querySelector('.header__catalog span').addEventListener('click',
+      function () {
+         document.querySelector('.header__catalog').classList.toggle('active');
+         document.querySelector('.header__product').classList.toggle('active');
+         document.querySelector('.header__product-professional').classList.remove('active');
+      })
+
+   document.querySelector('.catalog__professional').addEventListener('click',
+      function () {
+         document.querySelector('.header__product-professional').classList.add('active');
+      })
+
+   document.querySelector('.catalog__home').addEventListener('click',
+      function () {
+         document.querySelector('.header__product').classList.add('active');
+         document.querySelector('.header__product-professional').classList.remove('active');
+      })
+}
+//Каталог
+openCatalog()
+slider()
